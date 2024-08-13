@@ -1,3 +1,8 @@
+body {
+  align-items: center;
+}
+
+
 .App {
   text-align: center;
 }
@@ -35,4 +40,19 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.pokemon-card {
+  width: 150px;
+  height: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.pokemon-card:hover {
+  transform: scale(1.05);
+}
+
+.pokemon-card.selected {
+  border-color: green;
 }
