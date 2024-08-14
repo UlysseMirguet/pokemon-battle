@@ -3,7 +3,7 @@
 import React from 'react';
 import PokemonCard from './PokemonCard';
 
-function PokemonList({ onPokemonSelect, selectedPokemons, pokemonList }) {
+function PokemonList({ onPokemonSelect, selectedPokemons, pokemonList = [] }) { // Default to an empty array
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
       {pokemonList.map(pokemon => (
@@ -11,9 +11,9 @@ function PokemonList({ onPokemonSelect, selectedPokemons, pokemonList }) {
           key={pokemon.name}
           name={pokemon.name}
           image={pokemon.image}
-          isSelected={selectedPokemons.includes(pokemon.name)}
+          isSelected={selectedPokemons.includes(pokemon)}
           hp={pokemon.hp}
-          onSelect={() => onPokemonSelect(pokemon.name)}
+          onSelect={() => onPokemonSelect(pokemon)}
         />
       ))}
     </div>

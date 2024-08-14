@@ -8,7 +8,7 @@ import { getAllPokemonDetails } from '../services/pokemonService';
 function LandingPage() {
   const [selectedPokemons, setSelectedPokemons] = useState([]);
   const [computerPokemons, setComputerPokemons] = useState([]);
-  const [pokemonList, setPokemonList] = useState([]);
+  const [pokemonList, setPokemonList] = useState([]); // Initialize as an empty array
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +19,7 @@ function LandingPage() {
 
         const randomPokemons = pokemonList
           .sort(() => 0.5 - Math.random())
-          .slice(0, 6)
-          .map(pokemon => pokemon.name); // Store only the name as key
+          .slice(0, 6);
         setComputerPokemons(randomPokemons);
       } catch (error) {
         console.error('Error fetching Pokémon data:', error);
@@ -30,11 +29,11 @@ function LandingPage() {
     fetchPokemons();
   }, []);
 
-  const handlePokemonSelect = (pokemonName) => {
-    if (selectedPokemons.includes(pokemonName)) {
-      setSelectedPokemons(selectedPokemons.filter(p => p !== pokemonName));
+  const handlePokemonSelect = (selectedPokemon) => {
+    if (selectedPokemons.includes(selectedPokemon)) {
+      setSelectedPokemons(selectedPokemons.filter(p => p !== selectedPokemon));
     } else if (selectedPokemons.length < 6) {
-      setSelectedPokemons([...selectedPokemons, pokemonName]);
+      setSelectedPokemons([...selectedPokemons, selectedPokemon]);
     }
   };
 
