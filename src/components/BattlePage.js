@@ -6,28 +6,28 @@ import PokemonCard from './PokemonCard';
 import { getAllPokemonDetails } from '../services/pokemonService';
 
 function BattlePage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [playerPokemons, setPlayerPokemons] = useState(location.state.selectedPokemons || []);
-  const [computerPokemons, setComputerPokemons] = useState(location.state.computerPokemons || []);
-  const [pokemonList, setPokemonList] = useState([]);
-  const [playerPokemon, setPlayerPokemon] = useState(null);
-  const [computerPokemon, setComputerPokemon] = useState(null);
-  const [playerHP, setPlayerHP] = useState(100);
-  const [computerHP, setComputerHP] = useState(100);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [playerPokemons, setPlayerPokemons] = useState(location.state.selectedPokemons || []);
+    const [computerPokemons, setComputerPokemons] = useState(location.state.computerPokemons || []);
+    const [pokemonList, setPokemonList] = useState([]);
+    const [playerPokemon, setPlayerPokemon] = useState(null);
+    const [computerPokemon, setComputerPokemon] = useState(null);
+    const [playerHP, setPlayerHP] = useState(100);
+    const [computerHP, setComputerHP] = useState(100);
 
-  useEffect(() => {
-    const fetchPokemons = async () => {
-      try {
-        const pokemonList = await getAllPokemonDetails();
-        setPokemonList(pokemonList);
-      } catch (error) {
-        console.error('Error fetching Pokémon data:', error);
-      }
-    };
+    useEffect(() => {
+        const fetchPokemons = async () => {
+            try {
+                const pokemonList = await getAllPokemonDetails();
+                setPokemonList(pokemonList);
+            } catch (error) {
+                console.error('Error fetching Pokémon data:', error);
+            }
+        };
 
-    fetchPokemons();
-  }, []);
+        fetchPokemons();
+    }, []);
 
   useEffect(() => {
     if (playerHP <= 0 && playerPokemon) {
@@ -60,74 +60,79 @@ function BattlePage() {
   }, [playerHP, computerHP, playerPokemon, computerPokemon]);
 
   const handlePlayerAttack = () => {
-    const damage = Math.floor(Math.random() * 20);
+    const damage = Math.floor(Math.random() * playerPokemon.attack); // Le Pokémon inflige des dégâts aléatoires, avec pour maximum sa valeur d'attaque
     setComputerHP(prevHP => Math.max(prevHP - damage, 0));
     setTimeout(handleComputerAttack, 1000);
-  };
+};
 
-  const handleComputerAttack = () => {
-    const damage = Math.floor(Math.random() * 20);
+const handleComputerAttack = () => {
+    const damage = Math.floor(Math.random() * computerPokemon.attack); // Le Pokémon inflige des dégâts aléatoires, avec pour maximum sa valeur d'attaque
     setPlayerHP(prevHP => Math.max(prevHP - damage, 0));
-  };
+};
+
 
   return (
     <div>
-      <h1>Battle</h1>
-      <div>
-        <h2>Select your next Pokémon</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {playerPokemons.map(pokemon => (
-            <PokemonCard
-              key={pokemon.name}
-              name={pokemon.name}
-              image={pokemon.image}
-              hp={pokemon.hp}
-              onSelect={() => {
-                if (!playerPokemon){
-                  setPlayerPokemon(pokemon); // Met à jour l'état avec le Pokémon sélectionné
-                  setPlayerHP(pokemon.hp)
-                  setPlayerPokemons(prev => prev.filter(p => p !== pokemon)); // Retire le Pokémon sélectionné de la liste
-                }
-              }}
-            />
-          ))}
-        </div>
-        <h2>Computer Pokémos</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {computerPokemons.map(pokemon => (
-            <PokemonCard
-              key={pokemon.name}
-              name={pokemon.name}
-              image={pokemon.image}
-              hp={pokemon.hp}
-            />
-          ))}
-        </div>
-      </div>
-      {playerPokemon && computerPokemon && (
+        <h1>Battle</h1>
         <div>
-          <h3>Battle: {playerPokemon.name} vs {computerPokemon.name}</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-            <PokemonCard
-              name={playerPokemon.name}
-              image={playerPokemon.image}
-              hp={playerHP}
-              isSelected={true}
-              onSelect={() => {}}
-            />
-            <div>
-              <button onClick={handlePlayerAttack} disabled={playerHP <= 0 || computerHP <= 0}>Attack</button>
+            <h2>Select your next Pokémon</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {playerPokemons.map(pokemon => (
+                    <PokemonCard
+                        key={pokemon.name}
+                        name={pokemon.name}
+                        image={pokemon.image}
+                        hp={pokemon.hp}
+                        attack={pokemon.attack} // Passer la valeur d'attaque
+                        onSelect={() => {
+                            if (!playerPokemon) {
+                                setPlayerPokemon(pokemon);
+                                setPlayerHP(pokemon.hp);
+                                setPlayerPokemons(prev => prev.filter(p => p !== pokemon));
+                            }
+                        }}
+                    />
+                ))}
             </div>
-            <PokemonCard
-              name={computerPokemon.name}
-              image={computerPokemon.image}
-              hp={computerHP}
-              isSelected={true}
-              onSelect={() => {}}
-            />
-          </div>
+            <h2>Computer Pokémons</h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {computerPokemons.map(pokemon => (
+                    <PokemonCard
+                        key={pokemon.name}
+                        name={pokemon.name}
+                        image={pokemon.image}
+                        hp={pokemon.hp}
+                        attack={pokemon.attack} // Passer la valeur d'attaque
+                    />
+                ))}
+            </div>
         </div>
-      )}
+        {playerPokemon && computerPokemon && (
+            <div>
+                <h3>Battle: {playerPokemon.name} vs {computerPokemon.name}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                    <PokemonCard
+                        name={playerPokemon.name}
+                        image={playerPokemon.image}
+                        hp={playerHP}
+                        attack={playerPokemon.attack} // Passer la valeur d'attaque
+                        isSelected={true}
+                        onSelect={() => {}}
+                    />
+                    <div>
+                        <button onClick={handlePlayerAttack} disabled={playerHP <= 0 || computerHP <= 0}>Attack</button>
+                    </div>
+                    <PokemonCard
+                        name={computerPokemon.name}
+                        image={computerPokemon.image}
+                        hp={computerHP}
+                        attack={computerPokemon.attack} // Passer la valeur d'attaque
+                        isSelected={true}
+                        onSelect={() => {}}
+                    />
+                </div>
+            </div>
+        )}
     </div>
   );
 }
